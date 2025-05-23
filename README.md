@@ -83,6 +83,8 @@ go build -ldflags "-w -s" -trimpath
 
 #### 方式二：预编译二进制
 
+https://github.com/overflow0verture/proxy_harvester/releases/tag/v1.0.0
+
 ### ⚡ 快速体验
 
 configs目录下存放项目配置，在使用前请阅读基础配置
@@ -92,7 +94,7 @@ plugin目录下存放着插件，网络空间引擎需要对应的api-key，启�
 修改完config.toml直接运行即可
 
 ```bash
-curl -X socks5://127.0.0.1:10086 https://icanhazip.com/
+curl -x socks5://127.0.0.1:10086 https://icanhazip.com/
 
 curl http://127.0.0.1:10087/api/proxies?token=atoken&count=5&type=socks5
 ```
@@ -142,8 +144,6 @@ Proxy Harvester 采用基于 [yaegi](https://github.com/traefik/yaegi) 的动态
 
 
 ### 📅 历史版本
-
-
 
 <details>
 <summary><strong>Version 1.0.0</strong></summary>
