@@ -22,7 +22,7 @@ var config = struct {
 	APIURL:      "https://fofa.info/api/v1/search/all",
 	Email:       "xxxxxxxxxxxxxxxxxxxxxxxxxxx", // 在这里填入你的FOFA邮箱
 	Key:         "xxxxxxxxxxxxxxxxxxxxxxxxxxx", // 在这里填入你的FOFA API Key
-	QueryString: "protocol==\"socks5\" && country==\"CN\" && \"no authentication\"",
+	QueryString: "protocol==\"socks5\" && country==\"CN\" && banner=\"Method:No Authentication\"",
 	ResultSize:  50,
 	Periodic:    "0 0 * * 1", 
 }

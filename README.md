@@ -102,7 +102,30 @@ curl http://127.0.0.1:10087/api/proxies?token=atoken&count=5&type=socks5
 
 ### 🎯 插件架构
 
-Proxy Harvester 采用基于 [yaegi](https://github.com/traefik/yaegi) 的动态插件系统，支持运行时加载和热更新。
+Proxy Harvester 采用基于 [yaegi](https://github.com/traefik/yaegi) 的动态插件系统，支持运行时加载和热更新，使用时将需要的插件下载后，直接加入plugins路径即可。
+
+### 🧩 插件介绍
+
+#### 网络空间引擎
+
+|名称|插件路径|网站|备注|
+|------|------|-------|------|
+|hunter|[hunter_requests.go](plugins/hunter_requests.go)|[地址](https://hunter.qianxin.com/)|每日/月免费积分|
+|fofa|[fofa_requests.go](plugins/fofa_requests.go)|[地址](https://fofa.info/)|可以修改fofa请求地址|
+|daydaymap|[daydaymap_requests.go](plugins/daydaymap_requests.go)|[地址](https://www.daydaymap.com/)|每日/月免费积分|
+|quake|[quake_requests.go](plugins/quake_requests.go)|[地址](https://quake.360.net/)||
+|shodan|[shodan_requests.go](plugins/shodan_requests.go)|[地址](https://www.shodan.io/)||
+|zoomeye|[zoomeye_requests.go](plugins/zoomeye_requests.go)|[地址](https://www.zoomeye.org/)|效率较低|
+
+#### 免费代理网站
+
+|名称|插件路径|网站|备注|
+|------|------|-------|------|
+|ip3366|[ip3366_crawler.go](plugins/ip3366_crawler.go)|[地址](http://www.ip3366.net/)|可用ip少|
+|scdn|[scdn_requests.go](plugins/scdn_requests.go)|[地址](https://proxy.scdn.io/)|可用ip多|
+
+#### 付费代理API调用（todo）
+
 
 ### 📝 开发新插件
 
@@ -115,9 +138,9 @@ Proxy Harvester 采用基于 [yaegi](https://github.com/traefik/yaegi) 的动态
 
 ## 🖼️ 运行截图
 
-![代理采集](images/image1.png)
 ![代理采集](images/image-1.png)
 ![api 接口](images/image.png)
+![轮换ip](images/2025-05-26_142541.png)
 
 ### 📁 数据持久化
 
