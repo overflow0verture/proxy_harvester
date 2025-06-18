@@ -1,8 +1,8 @@
 [listener]
-IP='127.0.0.1'
+IP='0.0.0.0'
 PORT=10086
-userName=''
-password=''
+userName='admin'
+password='rainbow2004'
 
 [task]
 periodicChecking='0 */5 * * *'

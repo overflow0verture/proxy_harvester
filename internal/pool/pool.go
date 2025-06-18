@@ -357,5 +357,7 @@ func (s *RedisProxyStore) Len() (int, error) {
 
 func InitProxyStore(cfg config.StorageConfig, rate int) ProxyStore {
 	logger.Info("使用Redis作为代理池存储")
-	return NewRedisProxyStore(cfg.RedisHost, cfg.RedisPort, cfg.RedisPassword, rate)
+	base := NewRedisProxyStore(cfg.RedisHost, cfg.RedisPort, cfg.RedisPassword, rate)
+	logger.Info("已启用UCB滑动窗口算法进行代理选择")
+	return NewUCBProxyStore(base, 100) // window size 100, can be made configurable
 }

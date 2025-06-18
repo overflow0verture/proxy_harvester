@@ -38,19 +38,32 @@ func TransmitReqFromClient(network string, address string, proxyStore pool.Proxy
 		dialer := &net.Dialer{Timeout: timeoutDur}
 		socksDialer, err := proxy.SOCKS5(network, host, auth, dialer)
 		if err != nil {
+			if rec, ok := proxyStore.(pool.ResultRecorder); ok {
+				rec.RecordResult(proxyAddr, false)
+			}
 			proxyStore.MarkInvalid(proxyAddr)
+			logger.Info("%s无效，自动切换下一个......\n", proxyAddr)
 			return TransmitReqFromClient(network, address, proxyStore, timeout)
 		}
 		conn, err := socksDialer.Dial(network, address)
 		if err != nil {
+			if rec, ok := proxyStore.(pool.ResultRecorder); ok {
+				rec.RecordResult(proxyAddr, false)
+			}
 			proxyStore.MarkInvalid(proxyAddr)
 			logger.Info("%s无效，自动切换下一个......\n", proxyAddr)
 			return TransmitReqFromClient(network, address, proxyStore, timeout)
+		}
+		if rec, ok := proxyStore.(pool.ResultRecorder); ok {
+			rec.RecordResult(proxyAddr, true)
 		}
 		return conn, nil
 	} else if strings.HasPrefix(proxyAddr, "http://") || strings.HasPrefix(proxyAddr, "https://") {
 		proxyURL, err := url.Parse(proxyAddr)
 		if err != nil {
+			if rec, ok := proxyStore.(pool.ResultRecorder); ok {
+				rec.RecordResult(proxyAddr, false)
+			}
 			proxyStore.MarkInvalid(proxyAddr)
 			return TransmitReqFromClient(network, address, proxyStore, timeout)
 		}
@@ -79,6 +92,9 @@ func TransmitReqFromClient(network string, address string, proxyStore pool.Proxy
 		req += "\r\n"
 		_, err = conn.Write([]byte(req))
 		if err != nil {
+			if rec, ok := proxyStore.(pool.ResultRecorder); ok {
+				rec.RecordResult(proxyAddr, false)
+			}
 			conn.Close()
 			proxyStore.MarkInvalid(proxyAddr)
 			return TransmitReqFromClient(network, address, proxyStore, timeout)
@@ -86,9 +102,15 @@ func TransmitReqFromClient(network string, address string, proxyStore pool.Proxy
 		buf := make([]byte, 4096)
 		n, err := conn.Read(buf)
 		if err != nil || !strings.Contains(string(buf[:n]), "200 Connection established") {
+			if rec, ok := proxyStore.(pool.ResultRecorder); ok {
+				rec.RecordResult(proxyAddr, false)
+			}
 			conn.Close()
 			proxyStore.MarkInvalid(proxyAddr)
 			return TransmitReqFromClient(network, address, proxyStore, timeout)
+		}
+		if rec, ok := proxyStore.(pool.ResultRecorder); ok {
+			rec.RecordResult(proxyAddr, true)
 		}
 		return conn, nil
 	}
