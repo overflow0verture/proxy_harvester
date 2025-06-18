@@ -17,14 +17,7 @@ import (
 func StartServer(proxyStore pool.ProxyStore, cfg config.ListenerConfig, timeout int) {
 	// 获取代理池信息
 	proxyCount, _ := proxyStore.Len()
-	storeType := "未知"
-	switch proxyStore.(type) {
-	case *pool.FileProxyStore:
-		storeType = "文件存储"
-	case *pool.RedisProxyStore:
-		storeType = "Redis存储"
-	}
-	
+	storeType := "Redis存储"
 	logger.Info("Socks5服务启动中，监听地址: %s:%d，使用%s代理池，当前有 %d 个代理", 
 		cfg.IP, cfg.Port, storeType, proxyCount)
 	

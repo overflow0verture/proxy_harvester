@@ -33,14 +33,7 @@ func CheckSocks(checkSocks config.CheckSocksConfig, socksListParam []string, pro
 	timeout := checkSocks.Timeout
 
 	checkRspKeywords := checkSocks.CheckRspKeywords
-	checkGeolocateConfig := checkSocks.CheckGeolocate
-	checkGeolocateSwitch := checkGeolocateConfig.Switch
-	isOpenGeolocateSwitch := false
 	reqUrl := checkSocks.CheckURL
-	if checkGeolocateSwitch == "open" {
-		isOpenGeolocateSwitch = true
-		reqUrl = checkGeolocateConfig.CheckURL
-	}
 
 	logger.Info("开始批量检测代理，并发: %v, 超时标准: %vs", maxWorkers, timeout)
 
@@ -54,7 +47,7 @@ func CheckSocks(checkSocks config.CheckSocksConfig, socksListParam []string, pro
 		go func() {
 			defer wg.Done()
 			for job := range jobs {
-				alive := checkProxyAlive(job.Proxy, reqUrl, timeout, checkRspKeywords, isOpenGeolocateSwitch, checkGeolocateConfig)
+				alive := checkProxyAlive(job.Proxy, reqUrl, timeout, checkRspKeywords)
 				results <- checkResult{Proxy: job.Proxy, Alive: alive}
 			}
 		}()
@@ -89,7 +82,7 @@ func CheckSocks(checkSocks config.CheckSocksConfig, socksListParam []string, pro
 }
 
 // 检测单个代理是否可用，支持socks5/http/https认证代理
-func checkProxyAlive(proxyAddr, reqUrl string, timeout int, checkRspKeywords string, isOpenGeolocateSwitch bool, checkGeolocateConfig config.CheckGeolocateConfig) bool {
+func checkProxyAlive(proxyAddr, reqUrl string, timeout int, checkRspKeywords string) bool {
 	var client *http.Client
 	var transport *http.Transport
 
@@ -153,21 +146,8 @@ func checkProxyAlive(proxyAddr, reqUrl string, timeout int, checkRspKeywords str
 		return false
 	}
 	stringBody := string(body)
-	if !isOpenGeolocateSwitch {
-		if !strings.Contains(stringBody, checkRspKeywords) {
-			return false
-		}
-	} else {
-		for _, keyword := range checkGeolocateConfig.ExcludeKeywords {
-			if strings.Contains(stringBody, keyword) {
-				return false
-			}
-		}
-		for _, keyword := range checkGeolocateConfig.IncludeKeywords {
-			if !strings.Contains(stringBody, keyword) {
-				return false
-			}
-		}
+	if !strings.Contains(stringBody, checkRspKeywords) {
+		return false
 	}
 	return true
 }
@@ -182,7 +162,7 @@ func StartCheckWorkers(workerNum int, checkCfg config.CheckSocksConfig, proxySto
 // 检测worker，从ToCheckChan取代理，检测通过才入库
 func checkWorker(checkCfg config.CheckSocksConfig, proxyStore pool.ProxyStore) {
 	for proxy := range globals.ToCheckChan {
-		if checkProxyAlive(proxy, checkCfg.CheckURL, checkCfg.Timeout, checkCfg.CheckRspKeywords, checkCfg.CheckGeolocate.Switch == "open", checkCfg.CheckGeolocate) {
+		if checkProxyAlive(proxy, checkCfg.CheckURL, checkCfg.Timeout, checkCfg.CheckRspKeywords) {
 			proxyStore.Add(proxy)
 		}
 		// 检测失败自动丢弃

@@ -356,11 +356,6 @@ func (s *RedisProxyStore) Len() (int, error) {
 }
 
 func InitProxyStore(cfg config.StorageConfig, rate int) ProxyStore {
-	if cfg.Type == "redis" {
-		logger.Info("使用Redis作为代理池存储")
-		return NewRedisProxyStore(cfg.RedisHost, cfg.RedisPort, cfg.RedisPassword, rate)
-	} else {
-		logger.Info("使用本地文件作为代理池存储")
-		return NewFileProxyStore(cfg.FileName, rate)
-	}
+	logger.Info("使用Redis作为代理池存储")
+	return NewRedisProxyStore(cfg.RedisHost, cfg.RedisPort, cfg.RedisPassword, rate)
 }

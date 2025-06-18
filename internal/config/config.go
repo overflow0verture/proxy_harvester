@@ -43,21 +43,12 @@ type LogConfig struct {
 	IPSummaryInterval int `toml:"ip_summary_interval"`
 }
 
-// CheckGeolocateConfig 地理位置检测配置
-type CheckGeolocateConfig struct {
-	Switch          string   `toml:"switch"`
-	CheckURL        string   `toml:"checkURL"`
-	ExcludeKeywords []string `toml:"excludeKeywords"`
-	IncludeKeywords []string `toml:"includeKeywords"`
-}
-
 // CheckSocksConfig 代理检测配置
 type CheckSocksConfig struct {
-	CheckURL         string               `toml:"checkURL"`
-	CheckRspKeywords string               `toml:"checkRspKeywords"`
-	MaxConcurrentReq int                  `toml:"maxConcurrentReq"`
-	Timeout          int                  `toml:"timeout"`
-	CheckGeolocate   CheckGeolocateConfig `toml:"checkGeolocate"`
+	CheckURL         string `toml:"checkURL"`
+	CheckRspKeywords string `toml:"checkRspKeywords"`
+	MaxConcurrentReq int    `toml:"maxConcurrentReq"`
+	Timeout          int    `toml:"timeout"`
 }
 
 // PluginConfig 插件相关配置

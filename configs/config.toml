@@ -15,20 +15,11 @@ checkRspKeywords='Baiduspider'#上面地址原始响应中的某个字符串，�
 maxConcurrentReq=200 #同时最多N个并发通过代理访问上面的地址，检测socks5代理是否可用，可根据网络环境调整。云主机的话开500、1000都可以，本机的话，开三五十差不多。
 timeout=6 #单位秒，验证socks5代理的超时时间,建议保持在5或6，检查及使用代理访问上面的地址时，超过这个时间，判定无效
 
-[checkSocks.checkGeolocate]##******非特殊情况，默认即可******通过访问返回IP归属地信息的URL和关键字判断，来排除某些代理，如：某些情况下，真正要访问的系统限制只有大陆地区IP可以访问
-switch='close' #open:启用，非open:禁用
-checkURL='https://qifu-api.baidubce.com/ip/local/geo/v1/district'#访问此url获取IP归属地信息，出于某些原因，建议用国内的公司的相关接口。
-#下面的两个的值，需要根据上面url的返回内容填写
-excludeKeywords=['澳门','香港','台湾']#格式如：['澳门','香港']优先级最高，返回的body内容中，存在任一关键字，则跳过，
-includeKeywords=['中国']#格式如：['中国','北京']则只获取中国北京的代理，如果是['中国'],排除上述关键字的前提下则获取中国所有其他地区代理
-
 [storage]
-type = "file"                    # 可选 file 或 redis
-file_name = "ProxyData.txt"
-#type = "redis"
-#redis_host = "127.0.0.1"
-#redis_port = 6379
-#redis_password = ""
+type = "redis"                    # 仅支持 redis
+redis_host = "127.0.0.1"
+redis_port = 6379
+redis_password = ""
 
 
 [plugin]
